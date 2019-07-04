@@ -1,0 +1,59 @@
+---
+layout:     post                    # 使用的布局（不需要改）
+title:      清洁空气与环境健康系列报告(二)——2019年5月到6月衡水市大气颗粒物浓度与周围城市对比分析            # 标题
+subtitle:    #副标题
+date:       2019-07-04           # 时间
+author:     Limin                      # 作者
+header-img: img/Fox.jpg    #这篇文章标题背景图片
+catalog: true                       # 是否归档
+tags:                               #标签
+    - 工作记录
+---
+
+
+&nbsp; 衡水市的细颗粒物PM<sub>2.5</sub> 浓度(µg/m<sup>3</sup>) 呈现冬季比周围城市低，但是夏季比周边城市高的特点。针对这种奇怪的现象，我们利用网络公开发布的气象和AQI数据，利用机器学习中决策树方法进行分析，探讨衡水及周围几个城市2019年5月到6月细颗粒物浓度高值的原因。
+
+&nbsp; 虽然中国各个城市的AQI数据已经全部公开，但是出于国家安全考虑，中国的气象数据公开的城市依然有限，由此我们选取河北省石家庄，唐山，保定，邢台，德州，衡水六个数据公开的城市作为分析的对象。首先我们对比一下衡水市和德州市这两个最临近的城市的PM<sub>2.5</sub> 浓度，如下图所示。可以看出，五月份衡水市和德州市的PM<sub>2.5</sub> 浓度基本持平，存在个别小时极端高值(80-120 µg/m<sup>3</sup>)，但又很快下降。然而进入六月份，衡水市的PM<sub>2.5</sub> 浓度基本上高于德州市，最大相差有40 µg/m<sup>3</sup>。这样的差别可能是气象条件和排放源强二者共同作用的结果。
+
+![衡水和德州2019年5-6月PM2.5浓度对比 .png](https://upload-images.jianshu.io/upload_images/17085473-56b65018a8764375.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+&nbsp; 从衡水市和保定市的对比可以看出，两个城市的PM2.5浓度变化趋势基本一致，考虑到仪器测量误差的存在，衡水市和保定市PM<sub>2.5</sub> 浓度并无本质差别。保定市和德州市都是衡水市的相邻城市，为什么会出现这样的不同呢？
+
+![衡水和保定2019年5-6月PM2.5浓度对比 .png](https://upload-images.jianshu.io/upload_images/17085473-2d598faa91064603.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+&nbsp; 我们采用机器学习中的决策树回归方法，用气象条件来预测PM<sub>2.5</sub> 浓度。气象因子只选取了地面气象站测量的温度、湿度、风速和风向，因网络公开发布的气象数据时间分辨率为3小时，我们将数据统一为3小时的时间分辨率。决策树算法的特点是易于理解，树可以被可视化，需要很少的数据预处理，不需要特征归一化，是一个透明度高和解释性强的白盒子模型。以下为河北省这六个城市决策树回归预测模型的观测值和模拟值对比，均方根误差为9-12  µg/m<sup>3</sup>，也就是模型的误差在10 µg/m<sup>3</sup>左右，可以接受。
+
+![决策树预测保定市PM2.5浓度.png](https://upload-images.jianshu.io/upload_images/17085473-a6ed91bd2a1de310.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![决策树预测德州市PM2.5浓度.png](https://upload-images.jianshu.io/upload_images/17085473-82ec996a4e1eed04.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![决策树预测衡水市PM2.5 浓度.png](https://upload-images.jianshu.io/upload_images/17085473-dca40f09e35bd99d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![决策树预测石家庄市PM2.5浓度.png](https://upload-images.jianshu.io/upload_images/17085473-9cb730a5967ba4c6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![决策树预测唐山市PM2.5 浓度.png](https://upload-images.jianshu.io/upload_images/17085473-30b6090217c319cd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![决策树预测邢台市PM2.5浓度.png](https://upload-images.jianshu.io/upload_images/17085473-71d1039f80425671.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+&nbsp; 首先我们看一下衡水市的决策树回归预测模型。由于决策树的分支数量为6，叙述起来较为繁琐冗长。我们关心的是PM<sub>2.5</sub> 浓度高值，所以只需要看决策树预测浓度最高的分支即可。衡水市颗粒物重污染的决策模型为：RH > 47% → T< 25 ℃→ 东北风 → PM<sub>2.5</sub> 浓度 = 108 µg/m<sup>3</sup>。亦即，在温度较低、湿度较高、来自东北方向的风的情况下，衡水市的 PM<sub>2.5</sub> 能达到中度以上污染的浓度水平。这表明衡水的细颗粒物污染可能与东北方输送有关。
+
+ &nbsp;  然后我们再看德州市的决策树回归预测模型：RH > 53% → T< 25 ℃→ 风速小于1.5 m/s → PM<sub>2.5</sub> 浓度 = 84 µg/m<sup>3</sup>。亦即德州市的细颗粒物污染是由于静稳天气下局地排放累积造成。
+
+ &nbsp;  保定市的决策树回归模型：RH > 59% → T< 20 ℃→ 风速小于1.5 m/s → PM<sub>2.5</sub> 浓度 = 93 µg/m<sup>3</sup>。亦即德州市的细颗粒物污染是由于静稳天气下局地排放累积造成。
+
+ &nbsp; 石家庄市的决策树回归模型：RH > 55% → T< 23 ℃→ 非西风 → PM<sub>2.5</sub> 浓度 = 97 µg/m<sup>3</sup>。石家庄市的局地排放主要依靠西风扩散。一旦刮起东风，细颗粒物浓度就会累积。
+
+ &nbsp; 唐山市的决策树回归模型：RH > 60 % → 风速 < 2 m/s → PM<sub>2.5</sub> 浓度 = 91 µg/m<sup>3</sup>。亦即唐山市的细颗粒物污染主要是风速较小情况下局地累积造成。
+
+ &nbsp; 邢台市的决策树回归模型：RH > 50% → 南风 → PM<sub>2.5</sub> 浓度 = 102 µg/m<sup>3</sup>。邢台市的细颗粒物浓度污染主要依靠南风下细颗粒物浓度的累积。
+
+综上所述，在河北省六个城市中，衡水市的细颗粒物浓度对相对湿度RH最敏感，RH> 47% 就会使颗粒物浓度大有不同。衡水市除了本地累积外，叠加了东北方向的外来输送。而相邻城市如德州市的细颗粒物污染主要是因为风速较小下的局地累积。
+
+
+
+
+
+
+
+
+
